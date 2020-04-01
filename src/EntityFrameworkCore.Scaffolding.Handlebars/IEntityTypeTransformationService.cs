@@ -16,6 +16,13 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
         string TransformEntityName(IEntityType entity);
 
         /// <summary>
+        /// Transform DbSet name.
+        /// </summary>
+        /// <param name="entity">Entity type</param>
+        /// <returns>Transformed DbSet name.</returns>
+        string TransformDbSetName(IEntityType entity);
+
+        /// <summary>
         /// Transform entity file name.
         /// </summary>
         /// <param name="entity">Entity type.</param>
@@ -49,5 +56,6 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
         /// <param name="navProperties">Entity type navigation properties.</param>
         /// <returns>Transformed entity type navigation properties.</returns>
         List<Dictionary<string, object>> TransformNavigationProperties(List<Dictionary<string, object>> navProperties);
+        
     }
 }

@@ -190,6 +190,7 @@ namespace Microsoft.EntityFrameworkCore.Design
         /// <param name="services"> The <see cref="IServiceCollection" /> to add services to. </param>
         /// <param name="entityNameTransformer">Entity name transformer.</param>
         /// <param name="entityFileNameTransformer">Entity file name transformer.</param>
+        /// /// <param name="dbSetNameTransformer">DbSet name transformer.</param>
         /// <param name="constructorTransformer"></param>
         /// <param name="propertyTransformer">Property name transformer.</param>
         /// <param name="navPropertyTransformer">Navigation property name transformer.</param>
@@ -197,6 +198,7 @@ namespace Microsoft.EntityFrameworkCore.Design
         public static IServiceCollection AddHandlebarsTransformers(this IServiceCollection services,
             Func<IEntityType, string> entityNameTransformer = null,
             Func<IEntityType, string> entityFileNameTransformer = null,
+            Func<EntityPropertyInfo, string> dbSetNameTransformer = null,
             Func<EntityPropertyInfo, EntityPropertyInfo> constructorTransformer = null,
             Func<EntityPropertyInfo, EntityPropertyInfo> propertyTransformer = null,
             Func<EntityPropertyInfo, EntityPropertyInfo> navPropertyTransformer = null)
@@ -205,6 +207,7 @@ namespace Microsoft.EntityFrameworkCore.Design
                 new HbsEntityTypeTransformationService(
                     entityNameTransformer,
                     entityFileNameTransformer,
+                    dbSetNameTransformer,
                     constructorTransformer,
                     propertyTransformer,
                     navPropertyTransformer));

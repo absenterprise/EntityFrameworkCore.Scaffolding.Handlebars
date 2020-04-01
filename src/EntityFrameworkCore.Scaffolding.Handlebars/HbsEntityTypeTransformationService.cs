@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 
@@ -14,6 +15,11 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
         /// Entity name transformer.
         /// </summary>
         public Func<IEntityType, string> EntityNameTransformer { get; }
+
+        /// <summary>
+        /// DbSet name transformer.
+        /// </summary>
+        public Func<EntityPropertyInfo, string> DbSetNameTransformer { get; }
 
         /// <summary>
         /// Entity file name transformer.
@@ -40,12 +46,14 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
         /// </summary>
         /// <param name="entityNameTransformer">Entity name transformer.</param>
         /// <param name="entityFileNameTransformer">Entity file name transformer.</param>
+        /// <param name="dbSetNameTransformer">DbSet name transformer.</param>
         /// <param name="constructorTransformer">Constructor transformer.</param>
         /// <param name="propertyTransformer">Property name transformer.</param>
         /// <param name="navPropertyTransformer">Navigation property name transformer.</param>
         public HbsEntityTypeTransformationService(
             Func<IEntityType, string> entityNameTransformer = null,
             Func<IEntityType, string> entityFileNameTransformer = null,
+            Func<EntityPropertyInfo, string> dbSetNameTransformer = null,
             Func<EntityPropertyInfo, EntityPropertyInfo> constructorTransformer = null,
             Func<EntityPropertyInfo, EntityPropertyInfo> propertyTransformer = null,
             Func<EntityPropertyInfo, EntityPropertyInfo> navPropertyTransformer = null)
@@ -55,6 +63,7 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
             ConstructorTransformer = constructorTransformer;
             PropertyTransformer = propertyTransformer;
             NavPropertyTransformer = navPropertyTransformer;
+            DbSetNameTransformer = dbSetNameTransformer;
         }
 
         /// <summary>
@@ -65,6 +74,18 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
         /// <returns>Transformed entity type name.</returns>
         public string TransformEntityName(IEntityType entity) =>
             EntityNameTransformer?.Invoke(entity) ?? entity.Name;
+
+        /// <summary>
+        /// Transform DbSet name.
+        /// (default is .GetDbSetName())
+        /// </summary>
+        /// <param name="entityType">Entity type.</param>
+        /// <returns>Transformed DbSet name.</returns>
+        public string TransformDbSetName(IEntityType entityType)
+        {
+            var propertyInfo = new EntityPropertyInfo { PropertyName = entityType.GetDbSetName(), Type = entityType };
+            return DbSetNameTransformer?.Invoke(propertyInfo) ?? entityType.GetDbSetName();
+        }
 
         /// <summary>
         /// Transform entity file name.
@@ -170,5 +191,6 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
 
             return transformedNavProperties;
         }
+        
     }
 }

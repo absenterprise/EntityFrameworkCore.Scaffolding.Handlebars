@@ -6,7 +6,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using EntityFrameworkCore.Scaffolding.Handlebars.Internal;
+using Humanizer;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
@@ -328,10 +330,13 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
             foreach (var entityType in model.GetScaffoldEntityTypes(_options.Value))
             {
                 var transformedEntityName = EntityTypeTransformationService.TransformEntityName(entityType);
+
+                var transformedDbSetName = EntityTypeTransformationService.TransformDbSetName(entityType);
+
                 dbSets.Add(new Dictionary<string, object>
                 {
                     { "set-property-type", transformedEntityName },
-                    { "set-property-name", entityType.GetDbSetName() },
+                    { "set-property-name", transformedDbSetName },
                 });
             }
 
