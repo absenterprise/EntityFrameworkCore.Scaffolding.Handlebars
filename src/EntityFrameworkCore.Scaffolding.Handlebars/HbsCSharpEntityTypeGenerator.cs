@@ -177,10 +177,12 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
 
                 foreach (var navigation in collectionNavigations)
                 {
+                    var propertyType = navigation.GetTargetType();
                     lines.Add(new Dictionary<string, object>
                     {
                         { "property-name", navigation.Name },
-                        { "property-type", navigation.GetTargetType().Name },
+                        { "property-type", propertyType.Name },
+                        { "type" , propertyType},
                         { "property-isnullable", null }
                     });
                 }
@@ -249,12 +251,14 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
                         GenerateNavigationDataAnnotations(navigation);
                     }
 
+                    var navPropertyType = navigation.GetTargetType();
                     navProperties.Add(new Dictionary<string, object>
                     {
                         { "nav-property-collection", navigation.IsCollection() },
-                        { "nav-property-type", navigation.GetTargetType().Name },
+                        { "nav-property-type", navPropertyType.Name },
                         { "nav-property-name", navigation.Name },
                         { "nav-property-annotations", NavPropertyAnnotations },
+                        { "type", navPropertyType }
                     });
                 }
 
@@ -297,7 +301,7 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
 
             var schemaParameterNeeded = schema != null && schema != defaultSchema;
             var tableAttributeNeeded = schemaParameterNeeded || tableName != null && tableName != entityType.GetDbSetName();
-
+            
             if (tableAttributeNeeded)
             {
                 var tableAttribute = new AttributeWriter(nameof(TableAttribute));

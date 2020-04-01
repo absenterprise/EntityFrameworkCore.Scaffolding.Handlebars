@@ -98,8 +98,9 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
             foreach (var line in lines)
             {
                 var propTypeInfo = new EntityPropertyInfo(line["property-type"] as string,
-                    line["property-name"] as string,
-                    line["property-isnullable"] as bool?
+                    line["property-name"] as string,                    
+                    line["property-isnullable"] as bool?,
+                    line["type"] as IEntityType
                     );
                 var transformedProp = ConstructorTransformer?.Invoke(propTypeInfo) ?? propTypeInfo;
 
@@ -154,7 +155,8 @@ namespace EntityFrameworkCore.Scaffolding.Handlebars
             foreach (var navProperty in navProperties)
             {
                 var propTypeInfo = new EntityPropertyInfo(navProperty["nav-property-type"] as string,
-                    navProperty["nav-property-name"] as string);
+                    navProperty["nav-property-name"] as string,
+                    type: navProperty["type"] as IEntityType);
                 var transformedProp = NavPropertyTransformer?.Invoke(propTypeInfo) ?? propTypeInfo;
 
                 transformedNavProperties.Add(new Dictionary<string, object>
